@@ -1,0 +1,34 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+	"manifest_version": 2,
+	"name": "UofT Timetable Rating Embedder",
+	"version": "1.0.2",
+	"description": "A extension that inserts professor ratings from RateMyProf into the UofT artsci course finder.",
+	"icons": {
+		"128": "icon128.png",
+		"48": "icon48.png",
+		"16": "icon16.png"
+	},
+	"page_action": {
+		"default_icon": "icon16.png",
+		"default_title": "RMP Rating Embedder"
+	},
+
+	"background": {
+		"scripts": ["eventPage.js", "tracker.js"],
+		"persistent": false
+	},
+	"content_scripts": [{
+		"matches": ["https://timetable.iit.artsci.utoronto.ca/"],
+		"js": ["content.js"]
+	}],
+
+	"permissions": [
+		"tabs",
+        "https://timetable.iit.artsci.utoronto.ca/",
+        "http://www.ratemyprofessors.com/*"
+	],
+    "web_accessible_resources": ["cold-chili.png", "new-hot-chili.png"],
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
+}

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+
+  "name": "RateMyProfessors for UofT",
+  "description": "An extension for embedding RateMyProfessors information into ACORN.",
+  "version": "0.0.0.1",
+
+    "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["index.js", "jquery-3.2.1.min.js", "embed.js"]
+    }
+  ],
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Click here!"
+
+  },
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/",
+    "https://acorn.utoronto.ca/sws/welcome.do?welcome.dispatch#/courses/0"
+  ]
+}
+
