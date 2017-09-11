@@ -1,35 +1,37 @@
-$(document).ready(function() {
-    setTimeout(function() {
-        console.log("HELLO");
-        console.log("Go.");
+/*
+
+This is shitty code.
+
+*/
+
+var target = document.querySelector('body');
+
+last_tick = new Date();
+
+var observer = new MutationObserver(function(mutations) {// $(document).ready(function() {
+        current = new Date();
+        if (last_tick.getTime() + 25 - current.getTime() <= 0) {
+        console.log("Beginning search for Professors.");
         var schoolids = [1484, 12184, 4919, 4928]
-        //$(".instructorDetails").append("Lol.");
-        //$("div.instructorDetails").append("Lol.");
         $("div").each(function() {
             if ($(this).text() != "Instructor" && $(this).hasClass("instructorDetails")) { // Begin loop for current instructor
                 var name = $(this).text().replace(" ", "+"); // Replace space with plus
-                var ratings = []; // Initialize ratings array
-                schoolids.forEach(function(id) { //For every school we have
+
+                // This is used to store all the ratings for each professor. That way we can average it at the end.
+                // *IDEA* Get different rating depending on class? Doable?
+                var ratings = []; // Initialize ratings array.
+
+                schoolids.forEach(function(id) { // Begin foreach loop for every school (UTM, UofT, UTSG, UTSC)
                     var url = "https://www.ratemyprofessors.com/find/professor/?department=&institution=&page=1&query=" + name + "&queryoption=TEACHER&queryBy=schoolId&sid=" + id + "&sortBy=";
                     if (name != "TBA") { // Ignore all TBAs.
-                        //console.log(name)
-                        //                        $.getJSON(url, function(data) { //Gets the JSON from the above URL
-                        //                            data['professors'].forEach(function(info) {
-                        //                                if (info['overall_rating'].length >= 1) {
-                        //                                    ratings.push(info['overall_rating']);
-                        //                                    //console.log(ratings[0]);
-                        //                                }
-                        //                            });
-                        //                        });
-                        $.ajax({
+                        $.ajax({ // AJAX was my best option for accessing external data. Might replace if I can find something quicker.
                             url: url,
                             async: false,
                             dataType: 'json',
                             success: function(data) {
                                 data['professors'].forEach(function(info) {
                                     if (info['overall_rating'].length >= 1) {
-                                        ratings.push(info['overall_rating']);
-                                        //console.log(ratings[0]);
+                                        ratings.push(info['overall_rating']); // Add to ratings array
                                     }
                                 });
                             }
@@ -37,35 +39,32 @@ $(document).ready(function() {
 
                     }
                 });
-                var avg = 0
-                if (ratings.length >= 1) {
-                    ratings.forEach(function(rating) {
-                        avg += Number(rating);
-                        //console.log(rating);
-                    })
-                    avg = avg / ratings.length;
-                    $(this).append("&nbsp;"+avg+"");
+                var avg = findAvg(ratings);
+                if (avg >= 3.5) {
+                    $(this).append("&nbsp;<font color='green'>" + avg + "</font>");
+                } else if (avg < 3.5 && avg != 0) {
+                    $(this.append("&nbsp;<font color='red'>" + avg + "</font>"));
                 }
-                //console.log(sum);
-                //console.log(sum);
+
             }
         });
-    }, 2000);
+        }
+        last_tick = new Date();
+//});
 });
-//    var callback = function(professor) {
-//      if (professor === null) {
-//        console.log("No professor found.");
-//        return;
-//      }
-//      console.log("Name: " + professor.fname + " " + professor.lname);
-//      console.log("University: "+ professor.university);
-//      console.log("Quality: " + professor.quality);
-//      console.log("Easiness: " + professor.easiness);
-//      console.log("Helpfulness: " + professor.help);
-//      console.log("Average Grade: " + professor.grade);
-//      console.log("Chili: " + professor.chili);
-//      console.log("URL: " + professor.url);
-//      console.log("First comment: " + professor.comments[0]);
-//    };
-//
-//    rmp.get("Arnold Rosenbloom", callback);
+
+var findAvg = function(ratings) {
+    var avg = 0;
+    if (ratings.length >= 1) {
+        ratings.forEach(function(rating) {
+            avg += Number(rating);
+        });
+    avg = avg / ratings.length;
+}
+return avg;
+}
+
+var config = { attributes: false, childList: true, subtree: true, characterData: false };
+
+// pass in the target node, as well as the observer options
+observer.observe(target, config);
