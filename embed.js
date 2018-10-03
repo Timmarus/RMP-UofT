@@ -1,9 +1,3 @@
-/*
-
-This is shitty code.
-
-*/
-
 var target = document.querySelector('body');
 
 last_tick = new Date();
